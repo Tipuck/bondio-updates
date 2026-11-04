@@ -1,0 +1,9 @@
+{
+  "versionCode": 57,
+  "versionName": "0.9.8",
+  "sha256": "941ead6b30bf20f3997cd71d426fe7795a067f54f2e3e2304a7c59fc2904f05a",
+  "size": 2405251,
+  "minSdk": 26,
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.9.8.apk",
+  "notes": "Обновления и публичные данные через независимый канал без VPN; прежние проверки подписи и сохранение настроек."
+}
