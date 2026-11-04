@@ -10,6 +10,10 @@ def get(path):
 def save(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = path.with_suffix('.tmp'); temp.write_text(json.dumps(value, ensure_ascii=False, separators=(',', ':')) + '\n'); temp.replace(path)
+try:
+    get('/api/refresh/quotes')
+except Exception:
+    print('Refresh trigger unavailable; retaining original source freshness')
 data = get('/api/bonds')
 assert isinstance(data.get('rows'), list) and len(data['rows']) >= 50 and data.get('asOf')
 save(root / 'data/bonds.json', data)
