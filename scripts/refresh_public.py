@@ -4,7 +4,8 @@ p = argparse.ArgumentParser(); p.add_argument('--calendars', action='store_true'
 root = pathlib.Path(__file__).resolve().parents[1]
 base = 'https://bondio-data.tipuck.chatgpt.site'
 def get(path):
-    with urllib.request.urlopen(base + path, timeout=25) as response:
+    request = urllib.request.Request(base + path, headers={"Accept": "application/json", "User-Agent": "Bondio-Android/0.2.0"})
+    with urllib.request.urlopen(request, timeout=25) as response:
         raw = response.read(4 * 1024 * 1024)
     return json.loads(raw)
 def save(path, value):
