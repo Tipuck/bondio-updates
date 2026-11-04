@@ -1,0 +1,34 @@
+name: Public data mirror
+on:
+  workflow_dispatch:
+    inputs:
+      calendars:
+        type: boolean
+        default: true
+  schedule:
+    - cron: '*/30 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: public-data
+  cancel-in-progress: false
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preserve original public snapshots
+        env:
+          CALENDARS: ${{ inputs.calendars || (github.event_name == 'schedule' && 'false') }}
+        run: |
+          if [ "$CALENDARS" = "true" ]; then python scripts/refresh_public.py --calendars; else python scripts/refresh_public.py; fi
+      - name: Publish public snapshots
+        run: |
+          git config user.name "Bondio public data"
+          git config user.email "actions@users.noreply.github.com"
+          git add data
+          if ! git diff --cached --quiet; then git commit -m "Refresh public source snapshots"; git pull --rebase origin main; git push; fi
