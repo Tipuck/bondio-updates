@@ -1,0 +1,9 @@
+{
+  "versionCode": 58,
+  "versionName": "0.9.9",
+  "sha256": "fcdd77ecb43dc089f84b1c3bfa4a006adf172f460bc9d80ddb196e6b33b9facf",
+  "size": 2405251,
+  "minSdk": 26,
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.9.9.apk",
+  "notes": "Купонные суммы и проценты во всех вкладках, понятные подписи выплат и догрузка без скачка экрана."
+}
