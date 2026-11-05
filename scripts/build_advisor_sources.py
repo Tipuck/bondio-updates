@@ -1,4 +1,5 @@
 """Publish shared public issuer/rating/calendar facts; accepts no broker/account input."""
+import html, gzip, base64
 import argparse, concurrent.futures, datetime as dt, hashlib, json, math, os, pathlib, re, subprocess, tempfile, time, urllib.parse
 UTC = dt.timezone.utc
 MOEX = 'https://iss.moex.com/iss/securities.json'
@@ -13,7 +14,7 @@ def fresh(stamp, seconds):
 def get(url, maximum=8*1024*1024, timeout=15):
     # Normal TLS, no redirects or certificate bypass; only fixed public providers below.
     if not any(url.startswith(h) for h in (MOEX,CBR,FNS+'/','https://www.gtlk.ru/')): raise ValueError('Public source not allowed')
-    run = subprocess.run(['curl','--fail','--silent','--show-error','--connect-timeout','5','--max-time',str(timeout),'--max-filesize',str(maximum),url],capture_output=True,check=True)
+    run = subprocess.run(['curl','--fail','--silent','--show-error','--connect-timeout','5','--max-time',str(timeout),'--max-filesize',str(maximum),'-H','Accept: application/json','-H','User-Agent: Bondio-Android/issuer-report',url],capture_output=True,check=True)
     if len(run.stdout)>maximum: raise ValueError('Oversized public response')
     return run.stdout
 def load(path, default):
@@ -75,7 +76,7 @@ def ratings(previous):
             for row in rows: all_rows.append({k:row.get(k,'') for k in RATING_KEYS})
             time.sleep(.05)
         if len(all_rows)!=count: raise ValueError('CBR registry incomplete')
-        return {'ratingAsOf':now(),'ratingRows':all_rows,'ratingExpectedCount':count,'ratingPages':pages,'ratingPagesCollected':pages,'ratingComplete':True}
+        return {'ratingAsOf':now(),'ratingRows':all_rows,'ratingExpectedCount':count,'ratingPages':pages,'ratingPagesCollected':pages,'ratingComplete':False,'ratingCoverage':'pagination_boundary_under_review'}
 def project_financial(org,reports):
     # Preserve every report/correction and every field consumed by the Android parser.
     # Only unused presentation metadata is removed; latest/ambiguous/correction logic stays in Java.
@@ -103,7 +104,7 @@ def financial(inn,previous):
             url='https://www.gtlk.ru/investors/otchetnost2/2025/msfo/GTLK_2025.pdf';raw=get(url,timeout=20);row.update(source=url,sha256=hashlib.sha256(raw).hexdigest())
         else:
             search=json.loads(get(FNS+'/advanced-search/organizations/search?query='+inn,timeout=10))
-            ids={r.get('id') for r in search.get('content',[]) if r.get('inn')==inn and isinstance(r.get('id'),int) and r['id']>0}
+            ids={r.get('id') for r in search.get('content',[]) if html.unescape(re.sub(r'<[^>]*>','',str(r.get('inn','')))).strip()==inn and isinstance(r.get('id'),int) and r['id']>0}
             if search.get('totalPages',0)>1 or len(ids)!=1: row['error']='issuer_not_found'
             else:
                 identifier=next(iter(ids));org=json.loads(get(FNS+'/nbo/organizations/'+str(identifier),timeout=10));reports=json.loads(get(FNS+'/nbo/organizations/'+str(identifier)+'/bfo/',timeout=10))
@@ -117,17 +118,31 @@ def financial(inn,previous):
 def build(root):
     data=load(root/'data/bonds.json',{});targets={r['isin'] for r in data.get('rows',[]) if re.fullmatch(r'(?:RU|SU)[A-Z0-9]{10}',r.get('isin',''))}
     if len(targets)<50: raise ValueError('Catalogue missing')
-    previous=load(root/'data/advisor-core.json',{});table,issuer_at=issuers(targets,previous);core={'schemaVersion':1,'asOf':now(),'issuerSource':MOEX,'issuerAsOf':issuer_at,'issuerTable':table,'ratingSource':CBR,'financials':{}}
-    core.update(ratings(previous));index=table['columns'].index('emitent_inn');inns=sorted({r[index]for r in table['data']if isinstance(r[index],str)and re.fullmatch(r'[0-9]{10}',r[index])})
-    with concurrent.futures.ThreadPoolExecutor(max_workers=6)as pool:core['financialRaw']=dict(pool.map(lambda inn:financial(inn,previous.get('financialRaw',{})),inns))
+    previous=load(root/'data/advisor-core.json',{});
+    if previous.get('encoding')=='gzip-base64':previous=json.loads(gzip.decompress(base64.b64decode(previous['payload'])));
+    table,issuer_at=issuers(targets,previous);core={'schemaVersion':1,'asOf':now(),'issuerSource':MOEX,'issuerAsOf':issuer_at,'issuerTable':table,'ratingSource':CBR,'financials':{}}
+    core.update({k:previous[k] for k in ['ratingAsOf','ratingRows','ratingExpectedCount','ratingPages','ratingPagesCollected'] if k in previous});core['ratingComplete']=False;index=table['columns'].index('emitent_inn');inns=sorted({r[index]for r in table['data']if isinstance(r[index],str)and re.fullmatch(r'[0-9]{10}',r[index])})
+    pool=concurrent.futures.ThreadPoolExecutor(max_workers=6);jobs={pool.submit(financial,inn,previous.get('financialRaw',{})):inn for inn in inns};core['financialRaw']={}
+    try:
+        for future in concurrent.futures.as_completed(jobs,timeout=120):
+            inn,value=future.result();core['financialRaw'][inn]=value
+    except concurrent.futures.TimeoutError: pass
+    finally:
+        for future in jobs:future.cancel()
+        pool.shutdown(wait=False,cancel_futures=True)
+    # Preserve only original last-good facts, never refresh their source timestamps.
+    for inn in inns:
+        if inn not in core['financialRaw'] and inn in previous.get('financialRaw',{}):core['financialRaw'][inn]=previous['financialRaw'][inn]
     calendars={}
     for isin in targets:
         value=load(root/'data/calendars'/(isin+'.json'),None)
         if value and value.get('isin')==isin and isinstance(value.get('coupons'),list)and isinstance(value.get('amortizations'),list):calendars[isin]=value
     if len(calendars)<len(targets)*.85:raise ValueError('Calendar bundle incomplete')
     # Both files stay below the existing client limit; each source retains its own original time.
-    save(root/'data/advisor-calendars.json',{'schemaVersion':1,'asOf':now(),'calendars':calendars})
-    save(root/'data/advisor-core.json',core)
-    print(json.dumps({'catalogue':len(targets),'issuers':len(table['data']),'ratings':len(core['ratingRows']),'ratingPages':core['ratingPages'],'calendars':len(calendars),'financialIssuers':len(inns),'coreBytes':(root/'data/advisor-core.json').stat().st_size,'calendarBytes':(root/'data/advisor-calendars.json').stat().st_size}))
+    if not core['ratingComplete']:core.pop('ratingRows',None)
+    pack=lambda value:{'schemaVersion':1,'encoding':'gzip-base64','payload':base64.b64encode(gzip.compress(json.dumps(value,ensure_ascii=False,separators=(',',':')).encode(),mtime=0)).decode()}
+    save(root/'data/advisor-calendars.json',pack({'schemaVersion':1,'asOf':now(),'calendars':calendars}))
+    save(root/'data/advisor-core.json',pack(core))
+    print(json.dumps({'catalogue':len(targets),'issuers':len(table['data']),'ratings':len(core.get('ratingRows',[])),'ratingPages':core.get('ratingPages',0),'calendars':len(calendars),'financialIssuers':len(inns),'coreBytes':(root/'data/advisor-core.json').stat().st_size,'calendarBytes':(root/'data/advisor-calendars.json').stat().st_size}))
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--mirror-root',type=pathlib.Path,required=True);args=parser.parse_args();build(args.mirror_root.resolve())
