@@ -27,11 +27,17 @@ jobs:
           CALENDARS: ${{ inputs.calendars || (github.event_name == 'schedule' && github.event.schedule == '15 0 * * *') }}
         run: |
           if [ "$CALENDARS" = "true" ]; then python scripts/refresh_public.py --calendars; else python scripts/refresh_public.py; fi
-      - name: Collect shared advisor evidence
-        run: python scripts/build_advisor_sources.py --mirror-root .
-      - name: Publish public snapshots
+      - name: Publish market snapshots first
         run: |
           git config user.name "Bondio public data"
           git config user.email "actions@users.noreply.github.com"
-          git add data
-          if ! git diff --cached --quiet; then git commit -m "Refresh public source snapshots"; git pull --rebase origin main; git push; fi
+          git add data/bonds.json data/calendars
+          if ! git diff --cached --quiet; then git commit -m "Refresh public market snapshots"; git pull --rebase origin main; git push; fi
+      - name: Collect shared advisor evidence
+        continue-on-error: true
+        timeout-minutes: 4
+        run: python scripts/build_advisor_sources.py --mirror-root .
+      - name: Publish shared advisor snapshots
+        run: |
+          git add data/advisor-core.json data/advisor-calendars.json
+          if ! git diff --cached --quiet; then git commit -m "Refresh public advisor snapshots"; git pull --rebase origin main; git push; fi

@@ -5,8 +5,6 @@ UTC = dt.timezone.utc
 MOEX = 'https://iss.moex.com/iss/securities.json'
 CBR = 'https://ratings.cbr.ru/'
 FNS = 'https://bo.nalog.gov.ru'
-GROUPS = ['Финансовые инструменты','Негосударственные пенсионные фонды','Страховые организации','Прочие организации','Лизинговые компании','Кредитные организации','Микрофинансовые организации','Объекты суверенного кредитного рейтинга']
-RATING_KEYS = ['isin','inn','objectType','ratingAction','ratingValue','kraName','releaseDate','releaseUrl']
 def now(): return dt.datetime.now(UTC).isoformat().replace('+00:00','Z')
 def fresh(stamp, seconds):
     try: return -300 <= (dt.datetime.now(UTC)-dt.datetime.fromisoformat(stamp.replace('Z','+00:00'))).total_seconds() <= seconds
@@ -40,43 +38,6 @@ def issuers(targets, previous):
     else: raise ValueError('Incomplete MOEX pagination')
     if len({dict(zip(names,r)).get('isin') for r in rows})<len(targets)*.85: raise ValueError('Insufficient issuer coverage')
     return {'columns':names,'data':rows},now()
-def ratings(previous):
-    if fresh(previous.get('ratingAsOf'),1500) and previous.get('ratingComplete'): return {k:previous[k] for k in ['ratingAsOf','ratingRows','ratingExpectedCount','ratingPages','ratingPagesCollected','ratingComplete']}
-    with tempfile.TemporaryDirectory(prefix='bondio-public-cbr-') as tmp:
-        cookie=pathlib.Path(tmp)/'cookies';html=subprocess.check_output(['curl','--fail','--silent','--show-error','--connect-timeout','5','--max-time','15','-c',str(cookie),CBR]).decode()
-        if re.search(r'id=[\"\x27]captcha[\"\x27]',html): raise ValueError('CBR requires manual verification')
-        token=re.search(r'[\"\x27]bitrix_sessid[\"\x27]\s*:\s*[\"\x27]([a-z0-9]+)',html)
-        if not token: raise ValueError('CBR session unavailable')
-        csrf=[token.group(1)]
-        def post(action,fields,retry=True):
-            body=[('sessid',csrf[0])]+fields
-            raw=subprocess.check_output(['curl','--fail','--silent','--show-error','--connect-timeout','5','--max-time','20','-b',str(cookie),'-c',str(cookie),'-H','Content-Type: application/x-www-form-urlencoded; charset=UTF-8','-H','X-Requested-With: XMLHttpRequest','-H','Referer: '+CBR,'--data-binary','@-',CBR+'bitrix/services/main/ajax.php?c=prr.form&action='+action+'&mode=ajax'],input=urllib.parse.urlencode(body).encode())
-            response=json.loads(raw);data=response.get('data')
-            errors=response.get('errors',[])
-            renewed=next((e.get('customData',{}).get('csrf') for e in errors if isinstance(e,dict)and e.get('code')=='invalid_csrf'),None)
-            if retry and isinstance(renewed,str) and re.fullmatch(r'[a-z0-9]+',renewed):
-                csrf[0]=renewed;return post(action,fields,False)
-            if response.get('status')!='success' or not isinstance(data,dict) or data.get('captchaResult') is False: raise ValueError('CBR search not complete/available')
-            return data
-        post('searchRating',[('fields[formSearh]','advanced'),('fields[disclaimer]','1')]+[('fields[typeGroup][]',g)for g in GROUPS])
-        def page(number): return post('searchRatingNavigation',[('fields[pageSize]','100'),('fields[pageNumber]',str(number)),('fields[sortingField]','objectName'),('fields[sortingDirection]','ascending')])
-        first=page(1);pages=int(first['pageCount']);count=int(first['itemCount']);size=int(first['pageSize'])
-        if size!=100 or not 1<=pages<=300 or not 1<=count<=20000: raise ValueError('Unexpected CBR registry bounds')
-        all_rows=[];page_fingerprints=set()
-        for n in range(1,pages+1):
-            data=first if n==1 else page(n)
-            if int(data['pageNumber'])!=n or int(data['pageCount'])!=pages or int(data['itemCount'])!=count: raise ValueError('Registry changed during pagination')
-            rows=data.get('itemList',[])
-            if len(rows)!=min(size,count-(n-1)*size): raise ValueError('CBR page truncated')
-            fingerprint=hashlib.sha256(json.dumps(rows,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
-            if fingerprint in page_fingerprints: raise ValueError('Repeated CBR page under different page number')
-            page_fingerprints.add(fingerprint)
-            # The official registry contains stable duplicate records within a page.
-            # Preserve every source slot; completeness uses its itemCount, never a deduplicated count.
-            for row in rows: all_rows.append({k:row.get(k,'') for k in RATING_KEYS})
-            time.sleep(.05)
-        if len(all_rows)!=count: raise ValueError('CBR registry incomplete')
-        return {'ratingAsOf':now(),'ratingRows':all_rows,'ratingExpectedCount':count,'ratingPages':pages,'ratingPagesCollected':pages,'ratingComplete':False,'ratingCoverage':'pagination_boundary_under_review'}
 def project_financial(org,reports):
     # Preserve every report/correction and every field consumed by the Android parser.
     # Only unused presentation metadata is removed; latest/ambiguous/correction logic stays in Java.
@@ -138,9 +99,15 @@ def build(root):
         value=load(root/'data/calendars'/(isin+'.json'),None)
         if value and value.get('isin')==isin and isinstance(value.get('coupons'),list)and isinstance(value.get('amortizations'),list):calendars[isin]=value
     if len(calendars)<len(targets)*.85:raise ValueError('Calendar bundle incomplete')
+    for calendar in calendars.values():
+        for field,keys in [('coupons',['date','recordDate','value']),('amortizations',['date','value'])]:
+            calendar[field]=[{k:row[k] for k in keys if k in row} if isinstance(row,dict) else row for row in calendar[field]]
     # Both files stay below the existing client limit; each source retains its own original time.
     if not core['ratingComplete']:core.pop('ratingRows',None)
-    pack=lambda value:{'schemaVersion':1,'encoding':'gzip-base64','payload':base64.b64encode(gzip.compress(json.dumps(value,ensure_ascii=False,separators=(',',':')).encode(),mtime=0)).decode()}
+    def pack(value):
+        raw=json.dumps(value,ensure_ascii=False,separators=(',',':')).encode()
+        if len(raw)>8*1024*1024:raise ValueError('Decoded public bundle exceeds client bound')
+        return {'schemaVersion':1,'encoding':'gzip-base64','payload':base64.b64encode(gzip.compress(raw,mtime=0)).decode()}
     save(root/'data/advisor-calendars.json',pack({'schemaVersion':1,'asOf':now(),'calendars':calendars}))
     save(root/'data/advisor-core.json',pack(core))
     print(json.dumps({'catalogue':len(targets),'issuers':len(table['data']),'ratings':len(core.get('ratingRows',[])),'ratingPages':core.get('ratingPages',0),'calendars':len(calendars),'financialIssuers':len(inns),'coreBytes':(root/'data/advisor-core.json').stat().st_size,'calendarBytes':(root/'data/advisor-calendars.json').stat().st_size}))
