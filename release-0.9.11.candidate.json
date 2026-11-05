@@ -1,0 +1,9 @@
+{
+  "versionCode": 60,
+  "versionName": "0.9.11",
+  "sha256": "3fe39ea028fe82326c43f17845a0e8f964ed5d9380908dcfa4a4622d2cfdb81e",
+  "size": 2413443,
+  "minSdk": 26,
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.9.11.apk",
+  "notes": "Ускорены рекомендации и проверка источников. Полный каталог сохранён."
+}
