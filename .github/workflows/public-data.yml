@@ -27,6 +27,8 @@ jobs:
           CALENDARS: ${{ inputs.calendars || (github.event_name == 'schedule' && github.event.schedule == '15 0 * * *') }}
         run: |
           if [ "$CALENDARS" = "true" ]; then python scripts/refresh_public.py --calendars; else python scripts/refresh_public.py; fi
+      - name: Collect shared advisor evidence
+        run: python scripts/build_advisor_sources.py --mirror-root .
       - name: Publish public snapshots
         run: |
           git config user.name "Bondio public data"
