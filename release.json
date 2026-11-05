@@ -1,9 +1,9 @@
 {
-  "versionCode": 58,
-  "versionName": "0.9.9",
-  "sha256": "fcdd77ecb43dc089f84b1c3bfa4a006adf172f460bc9d80ddb196e6b33b9facf",
-  "size": 2405251,
+  "versionCode": 59,
+  "versionName": "0.9.10",
+  "sha256": "539fb7ebe279d0d3908ecd57153107098ceab3182e3f910a72f8fb418e0e9dde",
+  "size": 2409347,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.9.9.apk",
-  "notes": "Купонные суммы и проценты во всех вкладках, понятные подписи выплат и догрузка без скачка экрана."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.9.10.apk",
+  "notes": "Быстрее подбор по всему каталогу. Компактные фильтры, всегда видимая сумма полученных выплат и история за 12 месяцев."
 }
