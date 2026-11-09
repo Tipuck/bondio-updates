@@ -1,9 +1,9 @@
 {
-  "versionCode": 67,
-  "versionName": "0.10.3",
-  "sha256": "7e483fce614d215f7b09feba350622b8c6e9fcc91bcb39250dae0075af86cb22",
+  "versionCode": 69,
+  "versionName": "0.10.4",
+  "sha256": "e5b767e834ac803670e4fc06b14176a288ca1f4fbf1a9af35a3c4c6968a84bac",
   "size": 2438131,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.3.apk",
-  "notes": "Рекомендации стали компактнее: суммы и действия сразу, подробный расчёт и риски — по нажатию. Исправлены расчёт бюджета и подбор по последним ценам; сумма меняется без потери шагов плана."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.4.apk",
+  "notes": "Компактнее верхняя и нижняя панели во всех разделах. Подписи и удобные области нажатия сохранены."
 }
