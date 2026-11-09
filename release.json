@@ -1,9 +1,9 @@
 {
-  "versionCode": 69,
-  "versionName": "0.10.4",
-  "sha256": "e5b767e834ac803670e4fc06b14176a288ca1f4fbf1a9af35a3c4c6968a84bac",
+  "versionCode": 71,
+  "versionName": "0.10.5",
+  "sha256": "c21aad8648e3534b9e5bfd22a7b7ebcf366d1ea5c4e2f4d24eba9368e0e54d86",
   "size": 2438131,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.4.apk",
-  "notes": "Компактнее верхняя и нижняя панели во всех разделах. Подписи и удобные области нажатия сохранены."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.5.apk",
+  "notes": "Выплаты по ближайшим датам показываются все, включая несколько в один день. График и список объединены в одну карточку с одной ссылкой на календарь."
 }
