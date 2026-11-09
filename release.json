@@ -1,9 +1,9 @@
 {
-  "versionCode": 63,
-  "versionName": "0.10.1",
-  "sha256": "fb409ad6fbcb4b4d1eae7c37762363b6ce08d630d1a72228de58ad940762645f",
-  "size": 2434035,
+  "versionCode": 65,
+  "versionName": "0.10.2",
+  "sha256": "fcbd1ca6e92f78ce82562d6d8d1fe1db0cb48ce0e3cce7f360c49ab400469ccf",
+  "size": 2438131,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.1.apk",
-  "notes": "Исправлена прокрутка выплат по месяцам в календаре и портфеле. Выбор месяца, фильтры и обновление данных сохраняют положение графика."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.2.apk",
+  "notes": "Рекомендации: точные бумаги и количества для продажи и покупки, средний месячный и годовой эффект, доплата, комиссии и изменения риска. Подробности сохраняются в плане."
 }
