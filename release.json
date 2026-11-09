@@ -1,9 +1,9 @@
 {
-  "versionCode": 61,
-  "versionName": "0.10.0",
-  "sha256": "5f10eab1a0c6086d6c126b54dab00205d1c2b8f14a3433d4b564f688f627afc3",
+  "versionCode": 63,
+  "versionName": "0.10.1",
+  "sha256": "fb409ad6fbcb4b4d1eae7c37762363b6ce08d630d1a72228de58ad940762645f",
   "size": 2434035,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.0.apk",
-  "notes": "Новый дизайн: портфель, календарь, рынок и план. Плавные переходы и единые суммы. Прежний дизайн можно вернуть в настройках с сохранением данных."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.1.apk",
+  "notes": "Исправлена прокрутка выплат по месяцам в календаре и портфеле. Выбор месяца, фильтры и обновление данных сохраняют положение графика."
 }
