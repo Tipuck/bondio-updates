@@ -1,9 +1,9 @@
 {
-  "versionCode": 60,
-  "versionName": "0.9.11",
-  "sha256": "3fe39ea028fe82326c43f17845a0e8f964ed5d9380908dcfa4a4622d2cfdb81e",
-  "size": 2413443,
+  "versionCode": 61,
+  "versionName": "0.10.0",
+  "sha256": "5f10eab1a0c6086d6c126b54dab00205d1c2b8f14a3433d4b564f688f627afc3",
+  "size": 2434035,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.9.11.apk",
-  "notes": "Ускорены рекомендации и проверка источников. Полный каталог сохранён."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.0.apk",
+  "notes": "Новый дизайн: портфель, календарь, рынок и план. Плавные переходы и единые суммы. Прежний дизайн можно вернуть в настройках с сохранением данных."
 }
