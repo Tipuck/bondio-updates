@@ -1,9 +1,9 @@
 {
-  "versionCode": 71,
-  "versionName": "0.10.5",
-  "sha256": "c21aad8648e3534b9e5bfd22a7b7ebcf366d1ea5c4e2f4d24eba9368e0e54d86",
-  "size": 2438131,
+  "versionCode": 73,
+  "versionName": "0.10.6",
+  "sha256": "4bbc48e16817392b18e67e9a09aaf83160768d55425a94a64d89871f2ec099fc",
+  "size": 2467811,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.5.apk",
-  "notes": "Выплаты по ближайшим датам показываются все, включая несколько в один день. График и список объединены в одну карточку с одной ссылкой на календарь."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.6.apk",
+  "notes": "Два виджета Android: ближайшие выплаты и доход за месяц. Изменение ширины и высоты рамкой на главном экране. Сохранение прогноза купонов после закрытия реестра."
 }
