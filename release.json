@@ -1,9 +1,9 @@
 {
-  "versionCode": 73,
-  "versionName": "0.10.6",
-  "sha256": "4bbc48e16817392b18e67e9a09aaf83160768d55425a94a64d89871f2ec099fc",
-  "size": 2467811,
+  "versionCode": 75,
+  "versionName": "0.10.7",
+  "sha256": "485e8965a851107721140eb8a08b8ced53e52637321ed0634be5172157c1b6a3",
+  "size": 2845035,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.6.apk",
-  "notes": "Два виджета Android: ближайшие выплаты и доход за месяц. Изменение ширины и высоты рамкой на главном экране. Сохранение прогноза купонов после закрытия реестра."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.7.apk",
+  "notes": "Превью виджетов, крупный шрифт и отступы. Убраны время, счётчик скрытых выплат и знак≈ в купонных суммах."
 }
