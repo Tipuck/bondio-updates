@@ -1,9 +1,9 @@
 {
-  "versionCode": 75,
-  "versionName": "0.10.7",
-  "sha256": "485e8965a851107721140eb8a08b8ced53e52637321ed0634be5172157c1b6a3",
+  "versionCode": 76,
+  "versionName": "0.10.8",
+  "sha256": "9efac694cd67bb6fb8aec1f2ef243b144f6e92e8c9490765952ad602c04aba57",
   "size": 2845035,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.7.apk",
-  "notes": "Превью виджетов, крупный шрифт и отступы. Убраны время, счётчик скрытых выплат и знак≈ в купонных суммах."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.10.8.apk",
+  "notes": "Матрица сохраняет прокрутку при выборе ячейки, столбца и рейтинга, сбросе и быстрых повторных нажатиях."
 }
