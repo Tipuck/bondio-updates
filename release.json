@@ -1,9 +1,9 @@
 {
-  "versionCode": 78,
-  "versionName": "0.11.0",
-  "sha256": "65802d6f8aff52cfc3e31b3dfd3290ac118c285414fd0b918e1d8b265359dffb",
-  "size": 2550123,
+  "versionCode": 80,
+  "versionName": "0.11.1",
+  "sha256": "35b84852e8a485ed3920bc32ee06aeb07ef1bfca7b1a52c530f02a0f657c78f3",
+  "size": 3013111,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.11.0.apk",
-  "notes": "Новый дизайн всех разделов. Независимые цвета приложения и виджетов: палитра и HEX. Виджеты обновляются автоматически без ручной кнопки. Прежний интерфейс доступен в настройках."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.11.1.apk",
+  "notes": "Компактный интерфейс всех вкладок. Контрастное выделение месяца и единые цвета выплат. Исправлена медленная отрисовка и плавность переходов. Прежний дизайн доступен в настройках."
 }
