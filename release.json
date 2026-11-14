@@ -1,9 +1,9 @@
 {
-  "versionCode": 80,
-  "versionName": "0.11.1",
-  "sha256": "35b84852e8a485ed3920bc32ee06aeb07ef1bfca7b1a52c530f02a0f657c78f3",
-  "size": 3013111,
+  "versionCode": 82,
+  "versionName": "0.11.2",
+  "sha256": "be18027e3eca3fbae157cdfb4df8657e747c6a43174bff54e149f59cd83a60bd",
+  "size": 3017207,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.11.1.apk",
-  "notes": "Компактный интерфейс всех вкладок. Контрастное выделение месяца и единые цвета выплат. Исправлена медленная отрисовка и плавность переходов. Прежний дизайн доступен в настройках."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.11.2.apk",
+  "notes": "Ускорены смена месяца и переходы между вкладками. Суммы выплат помещаются в одну строку. Исправлена проверка плавности на Android."
 }
