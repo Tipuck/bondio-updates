@@ -1,9 +1,9 @@
 {
-  "versionCode": 84,
-  "versionName": "0.11.3",
-  "sha256": "c3b29829eba63850fd0ee0d5db71c0650230d93f562e62c9e2e636dc52345b2c",
-  "size": 3017207,
+  "versionCode": 86,
+  "versionName": "0.11.4",
+  "sha256": "fc1e2eb232ded83e4f69b5c8de71c07e7a1d8ef3209f7e943d0e07711ebed46e",
+  "size": 3025399,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.11.3.apk",
-  "notes": "Ускорены матрица рынка, выбор ячеек и переходы. Исправлено обновление устаревших данных."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.11.4.apk",
+  "notes": "Прибыль или убыток в сумме и процентах рядом со стоимостью счёта. Плавные переходы между месяцами и вкладками."
 }
