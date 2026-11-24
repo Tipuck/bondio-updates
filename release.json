@@ -1,9 +1,9 @@
 {
-  "versionCode": 89,
-  "versionName": "0.11.6",
-  "sha256": "bad8ea0806587dc9afafec82d62960d246b849c3031760dcfdc6bd62bb6a6e1c",
+  "versionCode": 90,
+  "versionName": "0.11.7",
+  "sha256": "ee70ed35e9ad488078b706897da27efe6f23442c34ad38e95f84296b41178347",
   "size": 3033591,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.11.6.apk",
-  "notes": "Результат позиции: сумма и процент роста или падения в одной строке. Корректные знаки и округление, поддержка крупного шрифта."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.11.7.apk",
+  "notes": "Единый формат результата счёта и позиции: суммы и проценты сохраняют сотые, тысячи разделены пробелами. Корректные знаки и крупный шрифт."
 }
