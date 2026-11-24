@@ -1,9 +1,9 @@
 {
-  "versionCode": 88,
-  "versionName": "0.11.5",
-  "sha256": "8e95d39faab7083390a4094a9f1b94e94e0b4f49ef83cb0384154bcb22f0281e",
+  "versionCode": 89,
+  "versionName": "0.11.6",
+  "sha256": "bad8ea0806587dc9afafec82d62960d246b849c3031760dcfdc6bd62bb6a6e1c",
   "size": 3033591,
   "minSdk": 26,
-  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.11.5.apk",
-  "notes": "Рост капитала по текущему портфелю: стоимость счёта и купонный доход, свой срок, пополнения и реинвестирование. Ручной калькулятор сохранён."
+  "apkUrl": "https://raw.githubusercontent.com/Tipuck/bondio-updates/main/apk/Bondio-0.11.6.apk",
+  "notes": "Результат позиции: сумма и процент роста или падения в одной строке. Корректные знаки и округление, поддержка крупного шрифта."
 }
